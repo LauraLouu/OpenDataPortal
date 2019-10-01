@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	
+	<title>Open Data Sammelsorium</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+	
+	<link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og==" crossorigin=""></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+<link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Nunito|Roboto|Titillium+Web|Work+Sans&display=swap" rel="stylesheet"> 
+
+
+<link rel="stylesheet" href="css/style.css">
+<script src="src/bundeslaender.js" ></script>
+<script src="src/csvtojson.js" ></script>
+
+
+</head>
+<body>
+
+   
+<div class="topnav" id="nav">
+    <a class="active" href="#Städte">Stadte</a>
+    <a href="#Kreis">Kreis</a>
+    <a href="#Bundesland">Bundesland</a>
+    <a href="#National">National</a>
+    <a href="#International">International</a>
+    <a href="#International"><b>Info</b></a>
+    <a href="javascript:void(0);" class="icon" onclick="responsiveNav()">
+      <i class="fa fa-bars"></i>
+    </a>
+  </div>
+
+<div id="map"></div>
+<script>
+
+    /* Toggle between adding and removing the "responsive" class to topnav when the user clicks on the icon */
+function responsiveNav() {
+  var x = document.getElementById("nav");
+  if (x.className === "topnav") {
+    x.className += " responsive";
+  } else {
+    x.className = "topnav";
+  }
+} 
+
+var file = "src/opendata.csv";
+    var geoJSON = csvTojson(file);
+    console.log(geoJSON);
+
+
+
+
+	var map = L.map('map').setView([50.94974, 10.98633], 7);
+
+	L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+	subdomains: 'abcd',
+	maxZoom: 19
+    }).addTo(map);
+
+</script>
+
+
+
+</body>
+</html>
