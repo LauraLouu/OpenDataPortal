@@ -18,12 +18,12 @@ function csvTojson(file, bundeslaender)
                
                 // console log to check column position 
                 var columns = lines[0].split(";");
-                console.log(columns);
+                //console.log(columns);
 
                 //create feature GeoJSON per line
                 for (i=1; i < lines.length; i++) {
                     var parts = lines[i].split(";");
-
+console.log(parts)
                     switch (parts[3]) {
                         case "Stadt":
                             var geometry = {
