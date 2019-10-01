@@ -22,24 +22,27 @@ function csvTojson(file, bundeslaender)
 
                 //create feature GeoJSON per line
                 for (i=1; i < lines.length; i++) {
+               // for (i=1; i < 2; i++) {
                     var parts = lines[i].split(";");
 
 
                     switch (parts[3]) {
+                        /// Stadt
                         case "Stadt":
-
                             var coords = parts[4].split(",");
-                            var lat = Number(coords[0]);
-                            var lon = Number(coords[1]);
+                            var lat = parseFloat(coords[0]);
+                            var lon = parseFloat(coords[1]);
                             var geometry = {
                                 "type":"Point",
-                                "coordinates": [lat, lon]
+                                "coordinates": [lon, lat]
                             }
                           break;
+
+                        /// Kreis
                         case "Kreis":
-                            // Anweisungen werden ausgeführt,
-                            // falls expression mit value2 übereinstimmt
                             break;
+                        
+                        /// Bundesland
                         case "Bundesland":
                             console.log("Bundesland gefunden, ID: " + parts[4]);
 
@@ -50,24 +53,21 @@ function csvTojson(file, bundeslaender)
                                     console.log("geometrie gegeben");
                                 } 
                             } 
-                            
-
+                        
                             break;
-                           // console.log(bundeslaender.length)
                          
+                        /// National
                         case "National":
-                            // Anweisungen werden ausgeführt,
-                            // falls expression mit value2 übereinstimmt
                             break;
+
+                        /// International
                         case "International":
-                            // Anweisungen werden ausgeführt,
-                            // falls expression mit value2 übereinstimmt
                             break;
+                        
+                        ///default
                         default:
-                          // Anweisungen werden ausgeführt,
-                          // falls keine der case-Klauseln mit expression übereinstimmt
                           break;
-                      }
+                      } // switch ende
 
                     
                    
@@ -81,6 +81,7 @@ function csvTojson(file, bundeslaender)
                             "name_eng": parts[1],
                             "description_eng":parts[7],
                             "url": parts[8],
+                            "layer": parts[3],
                             "category": parts[2],
                             "art": parts[12],
                             "reichweite": parts[11],

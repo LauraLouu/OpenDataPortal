@@ -1,4 +1,4 @@
-/*https://coolors.co/160c28-efcb68-e1efe6-aeb7b3-000411*/
+/*https://coolors.co/ff0000-fffffa-515052-000103-6da34d*/
 
 html, body {
     height: 100%;
@@ -15,7 +15,7 @@ html, body {
 
  /* Add a black background color to the top navigation */
  .topnav {
-  background-color: #160c28;
+  background-color: #000103;
   overflow: hidden;
 }
 
@@ -33,14 +33,18 @@ html, body {
 
 /* Change the color of links on hover */
 .topnav a:hover {
-  background-color: #e1efe6;
-  color: #160c28;
+  background-color: #fffffa;
+  color: #000103;
 }
 
 /* Add an active class to highlight the current page */
 .topnav a.active {
-  background-color: #efcb68;
-  color: #160c28;
+  background-color: #6da34d;
+  color: #000103;
+}
+
+#info {
+margin-right: 3em;
 }
 
 /* Hide the link that should open and close the topnav on small screens */

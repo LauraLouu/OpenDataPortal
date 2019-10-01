@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
 	
 	<link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
-
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og==" crossorigin=""></script>
 
@@ -19,7 +19,9 @@
 
 
 <link rel="stylesheet" href="css/style.css">
-<script src="src/csvtojson.js" ></script>
+
+<script type="text/javascript" src="src/bundeslaender.js"></script>
+<script type="text/javascript" src="src/csvtojson.js" ></script>
 
 
 </head>
@@ -27,20 +29,18 @@
 
    
 <div class="topnav" id="nav">
-    <a class="active" href="#Städte">Stadt</a>
-    <a href="#Kreis">Kreis</a>
-    <a href="#Bundesland">Bundesland</a>
-    <a href="#National">National</a>
-    <a href="#International">International</a>
-    <a href="#International"><b>Info</b></a>
+    <a id="info" href="#International"><b>Info</b></a>
+    <a id="stadtLayer" class="active" href="#Städte">Stadt</a>
+    <a id="kreisLayer" href="#Kreis">Kreis</a>
+    <a id="bundeslandLayer" href="#Bundesland">Bundesland</a>
+    <a id="nationalLayer" href="#National">National</a>
+    <a id="internationalLayer" href="#International">International</a>
     <a href="javascript:void(0);" class="icon" onclick="responsiveNav()">
       <i class="fa fa-bars"></i>
     </a>
   </div>
 
 <div id="map"></div>
-
-<script src="src/bundeslaender.js" ></script>
 <script>
 
     /* Toggle between adding and removing the "responsive" class to topnav when the user clicks on the icon */
@@ -53,10 +53,7 @@ function responsiveNav() {
   }
 } 
 
-var file = "src/opendata.csv";
-    var geoJSON = csvTojson(file, bundeslaender);
-    console.log(geoJSON);
-    L.geoJSON(geoJSON).addTo(map);
+
 
 
 
@@ -67,6 +64,111 @@ var file = "src/opendata.csv";
 	subdomains: 'abcd',
 	maxZoom: 19
     }).addTo(map);
+ 
+ 
+    function toggleFeatureLayer(id, layer){
+        $('.topnav > #' + id).click(function(){
+            if (map.hasLayer(layer)){
+                map.removeLayer(layer);
+            } else {
+                map.addLayer(layer);
+            }
+        });
+    }
+
+    function setColor(art){
+        switch (art){
+            case "thematisch": return "#e60000";
+            case "geographisch": return "#000";
+            default: return "#fff";
+        }
+    }
+
+    function categoryStyle(art){
+        var style = {
+                    radius: 7,
+                    fillColor: setColor(art),
+                    color: setColor(art),
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.5
+                };
+        return style;
+    }
+
+    var selectStyle = {
+                    radius: 7,
+                    fillColor: "#6da34d",
+                    color: "#6da34d",
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.5
+                };
+
+    function clickFeature(e){
+
+        var layer = e.target;
+        console.log(layer.options.style);
+        layer.setStyle(layer.options.style == selectStyle ? categoryStyle(layer.feature.porperties.art) : selectStyle);
+    }
+
+var selected;
+    function sortLayer(json, filterVal){
+       var layer = L.geoJSON(geoJSON, {
+            filter: function(feature, layer){
+                return feature.properties.layer == filterVal;
+            }, 
+            onEachFeature: function(feature, layer){
+                layer.bindTooltip(feature.properties.name_de,{className: 'countryLabel'});
+                layer.setStyle(categoryStyle(feature.properties.art));
+            }, 
+            pointToLayer: function(feature,latlng){
+                return L.circleMarker(latlng);
+            }
+        });
+        layer.on('click', function(e){
+                    if (selected){
+                        e.target.setStyle(categoryStyle(e.layer.feature.properties.art));
+                    }
+                    selected = e.layer;
+                    selected.bringToFront();
+                    selected.setStyle(selectStyle);
+
+                   // clickFeature(layer);
+                });
+        return layer;
+    }
+
+    var file = "src/opendata.csv";
+    var geoJSON = csvTojson(file, bundeslaender);
+   // console.log(JSON.stringify(geoJSON));
+    
+    
+    var stadtLayer = sortLayer(geoJSON, "Stadt");
+    var kreisLayer = sortLayer(geoJSON, "Kreis");
+    var bundeslandLayer = sortLayer(geoJSON, "Bundesland");
+    var nationalLayer = sortLayer(geoJSON, "National");
+//TODO international noch mitangeben
+
+    var geoLayers = L.layerGroup([stadtLayer, kreisLayer,bundeslandLayer,nationalLayer]);
+
+
+    
+
+
+    stadtLayer.addTo(map);
+
+    $('#nav').children('a').not(":first").click(function() {
+        $(this).toggleClass("active");
+    });
+
+    toggleFeatureLayer("stadtLayer", stadtLayer);
+    toggleFeatureLayer("kreisLayer", kreisLayer);
+    toggleFeatureLayer("bundeslandLayer", bundeslandLayer);
+    toggleFeatureLayer("nationalLayer", nationalLayer);
+
+
+   
 
 </script>
 
