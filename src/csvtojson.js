@@ -30,7 +30,6 @@ function csvTojson(file, bundeslaender)
                                 "type":"Point",
                                 "coordinates": [parts[4]]
                             }
-                            return geometry;
                           break;
                         case "Kreis":
                             // Anweisungen werden ausgeführt,
@@ -40,7 +39,6 @@ function csvTojson(file, bundeslaender)
                             for (var i = 0; i < bundeslaender.length; i++){
                                 if (bundeslaender.features.id = parts[4]){
                                     var geometry = bundesland.features.geometry;
-                                    return geometry;
                                 }
                             }
                           break;
