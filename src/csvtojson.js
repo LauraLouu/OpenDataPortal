@@ -88,7 +88,7 @@ function csvTojson(file, bundeslaender)
         }
     }
     rawFile.send(null);
-    //console.log(features[23]);
+    console.log(features[0]);
     var featureColl =  { 
         "type": "FeatureCollection",
         "features": features 
