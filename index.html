@@ -19,7 +19,6 @@
 
 
 <link rel="stylesheet" href="css/style.css">
-<script src="src/bundeslaender.js" ></script>
 <script src="src/csvtojson.js" ></script>
 
 
@@ -28,7 +27,7 @@
 
    
 <div class="topnav" id="nav">
-    <a class="active" href="#Städte">Stadte</a>
+    <a class="active" href="#Städte">Stadt</a>
     <a href="#Kreis">Kreis</a>
     <a href="#Bundesland">Bundesland</a>
     <a href="#National">National</a>
@@ -40,6 +39,8 @@
   </div>
 
 <div id="map"></div>
+
+<script src="src/bundeslaender.js" ></script>
 <script>
 
     /* Toggle between adding and removing the "responsive" class to topnav when the user clicks on the icon */
@@ -53,9 +54,9 @@ function responsiveNav() {
 } 
 
 var file = "src/opendata.csv";
-    var geoJSON = csvTojson(file);
+    var geoJSON = csvTojson(file, bundeslaender);
     console.log(geoJSON);
-
+    L.geoJSON(geoJSON).addTo(map);
 
 
 

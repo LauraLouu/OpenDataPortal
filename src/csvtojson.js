@@ -23,12 +23,17 @@ function csvTojson(file, bundeslaender)
                 //create feature GeoJSON per line
                 for (i=1; i < lines.length; i++) {
                     var parts = lines[i].split(";");
-                    console.log(parts);
+
+
                     switch (parts[3]) {
                         case "Stadt":
+
+                            var coords = parts[4].split(",");
+                            var lat = Number(coords[0]);
+                            var lon = Number(coords[1]);
                             var geometry = {
                                 "type":"Point",
-                                "coordinates": [parts[4]]
+                                "coordinates": [lat, lon]
                             }
                           break;
                         case "Kreis":
@@ -36,12 +41,20 @@ function csvTojson(file, bundeslaender)
                             // falls expression mit value2 übereinstimmt
                             break;
                         case "Bundesland":
-                            for (var i = 0; i < bundeslaender.length; i++){
-                                if (bundeslaender.features.id = parts[4]){
-                                    var geometry = bundesland.features.geometry;
-                                }
-                            }
-                          break;
+                            console.log("Bundesland gefunden, ID: " + parts[4]);
+
+                            // Schleife zum durchsuchen der Bundesland geoJSON mit übereinstimmender ID
+                            for (var j = 0; j < bundeslaender.features.length; j++){
+                                if (bundeslaender.features[j].id == parts[4]){
+                                    var geometry = bundeslaender.features[j].geometry;
+                                    console.log("geometrie gegeben");
+                                } 
+                            } 
+                            
+
+                            break;
+                           // console.log(bundeslaender.length)
+                         
                         case "National":
                             // Anweisungen werden ausgeführt,
                             // falls expression mit value2 übereinstimmt
@@ -50,10 +63,6 @@ function csvTojson(file, bundeslaender)
                             // Anweisungen werden ausgeführt,
                             // falls expression mit value2 übereinstimmt
                             break;
-                        case valueN:
-                          // Anweisungen werden ausgeführt,
-                          // falls expression mit valueN übereinstimmt
-                          break;
                         default:
                           // Anweisungen werden ausgeführt,
                           // falls keine der case-Klauseln mit expression übereinstimmt
@@ -86,7 +95,7 @@ function csvTojson(file, bundeslaender)
         }
     }
     rawFile.send(null);
-    console.log(features[0]);
+    //console.log(features[0]);
     var featureColl =  { 
         "type": "FeatureCollection",
         "features": features 
