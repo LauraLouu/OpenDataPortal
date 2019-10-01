@@ -23,7 +23,7 @@ function csvTojson(file, bundeslaender)
                 //create feature GeoJSON per line
                 for (i=1; i < lines.length; i++) {
                     var parts = lines[i].split(";");
-console.log(parts)
+                    console.log(parts);
                     switch (parts[3]) {
                         case "Stadt":
                             var geometry = {
