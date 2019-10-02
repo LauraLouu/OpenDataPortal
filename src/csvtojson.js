@@ -86,7 +86,8 @@ function csvTojson(file, bundeslaender)
                             "art": parts[12],
                             "reichweite": parts[11],
                             "nation": parts[13],
-                            "stand": parts[9]
+                            "stand": parts[9],
+                            "selected": false
                         }
                     }
                     // put feature into array

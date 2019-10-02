@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>
-
-	
+<head>	
 	<title>Open Data Sammelsorium</title>
 
     <meta charset="utf-8" />
@@ -13,34 +11,36 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og==" crossorigin=""></script>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-sidebar@0.2.0/src/L.Control.Sidebar.min.js"></script>
+    <!--link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-sidebar@0.2.0/src/L.Control.Sidebar.min.css"-->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     
-<link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Nunito|Roboto|Titillium+Web|Work+Sans&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Nunito|Roboto|Titillium+Web|Work+Sans&display=swap" rel="stylesheet"> 
 
-
-<link rel="stylesheet" href="css/style.css">
-
-<script type="text/javascript" src="src/bundeslaender.js"></script>
-<script type="text/javascript" src="src/csvtojson.js" ></script>
-
+    <link rel="stylesheet" href="css/style.css">
+    <script type="text/javascript" src="src/bundeslaender.js"></script>
+    <script type="text/javascript" src="src/csvtojson.js" ></script>
 
 </head>
 <body>
 
-   
 <div class="topnav" id="nav">
-    <a id="info" href="#International"><b>Info</b></a>
+    <a id="info" href="#Info"><b>Info</b></a>
+    <a id="news" href="#News"><b>News</b></a>
     <a id="stadtLayer" class="active" href="#Städte">Stadt</a>
     <a id="kreisLayer" href="#Kreis">Kreis</a>
     <a id="bundeslandLayer" href="#Bundesland">Bundesland</a>
     <a id="nationalLayer" href="#National">National</a>
-    <a id="internationalLayer" href="#International">International</a>
+    <a id="sammelLayer" href="#Sammel">Sammel-Seiten</a>
     <a href="javascript:void(0);" class="icon" onclick="responsiveNav()">
       <i class="fa fa-bars"></i>
     </a>
   </div>
 
+
 <div id="map"></div>
+<div id="sidebar"></div>
 <script>
 
     /* Toggle between adding and removing the "responsive" class to topnav when the user clicks on the icon */
@@ -53,34 +53,66 @@ function responsiveNav() {
   }
 } 
 
-
-
-
-
+////////////////// leaflet map 
 	var map = L.map('map').setView([50.94974, 10.98633], 7);
 
-	L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+	var basemap = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
 	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
 	subdomains: 'abcd',
 	maxZoom: 19
     }).addTo(map);
+
+    L.control.attribution().setPosition('bottom-left');
+
+    /////////// sidebar
+    var infoContent = "<h1>Open Data Sammelsorium</h1> Willkommen auf dieser kleinen Sammel-Seite rund um Open Data. Die Anbieter sind nach Reichweite eingeteilt (Siehe Navigation-Bar) und nach Thematik (z.B. geographisch, thematisch, etc.) visualisiert. <h2>Was ist Open Data?</h2> <center>===== <a href='' target='_blank' >Blindtext </a> ===== </center><br /> <p>Es war einmal an einem Sonntagmorgen zur Herbstzeit, gerade als der Buchweizen blühte: die Sonne war hell am Himmel aufgegangen, der Morgenwind ging warm über die Stoppeln, die Lerchen sangen in der Luft, die Bienen summten im dem Buchweizenfeldern, die Leute gingen in ihrem Sonntagskleidern in die Kirche, und alle Kreaturen war vergnügt, und der Igel auch.</p><p>Der Igel aber stand vor seiner Tür, hatte die Arme übereinander geschlagen, schaute dabei in den Morgenwind hinaus und trällerte ein kleines Liedchen, so gut und so schlecht, wie nun eben am lieben Sonntagmorgen ein Igel zu singen vermag. Indem er nun so vor sich hingesungen hatte, fiel ihm auf einmal ein, er könnte doch, während seine Frau die Kinder wüsche und anzöge, ein bisschen im Felde spazieren gehen und nach seinen Steckrüben sehen. Sein Steckrübenfeld war dicht in der Nähe seines Hauses, und er pflegte mit seiner Familie davon zu essen, darum sah er sie als die seinigen an. Gesagt, getan! Der Igel machte die Haustür hinter sich zu und schlug den Weg zu dem Felde ein.</p>";
+
+    var newsContent = "<h1>Was ist neu?</h1> Hier werden Updates aufgelistet von Neuerungen bezüglich der Daten!"
+    var sidebar = L.control.sidebar('sidebar', {
+        position: 'right',
+        closeButton: true
+    });
+    map.addControl(sidebar);
+
+    sidebar.setContent(infoContent);
+    
+    setTimeout(function () {
+        sidebar.show();
+    }, 500);
  
- 
-    function toggleFeatureLayer(id, layer){
+    function setSidebarContent(content){
+        if (sidebar.isVisible()) {
+            sidebar.hide();
+            
+            setTimeout(function () {
+                sidebar.setContent(content);
+                sidebar.show();
+            }, 500);
+        } else {
+            sidebar.setContent(content);
+            sidebar.show();
+        }   
+}
+
+//////// feature layers
+
+    function toggleFeatureLayer(id, mlayer){
         $('.topnav > #' + id).click(function(){
-            if (map.hasLayer(layer)){
+            map.eachLayer(function (layer) {
+                if (layer !== basemap) {
                 map.removeLayer(layer);
-            } else {
-                map.addLayer(layer);
-            }
+                }
+            });
+            map.addLayer(mlayer);
         });
     }
 
     function setColor(art){
         switch (art){
+            //https://coolors.co/087e8b-5fad56-f2c14e-f78154-6da34d
             case "thematisch": return "#e60000";
-            case "geographisch": return "#000";
-            default: return "#fff";
+            case "geographisch": return "#f78154";
+            default: return "#f2c14e";
         }
     }
 
@@ -112,7 +144,9 @@ function responsiveNav() {
         layer.setStyle(layer.options.style == selectStyle ? categoryStyle(layer.feature.porperties.art) : selectStyle);
     }
 
-var selected;
+var selected,
+    selectedLayer;
+
     function sortLayer(json, filterVal){
        var layer = L.geoJSON(geoJSON, {
             filter: function(feature, layer){
@@ -126,22 +160,53 @@ var selected;
                 return L.circleMarker(latlng);
             }
         });
-        layer.on('click', function(e){
-                    if (selected){
-                        e.target.setStyle(categoryStyle(e.layer.feature.properties.art));
-                    }
-                    selected = e.layer;
-                    selected.bringToFront();
-                    selected.setStyle(selectStyle);
 
-                   // clickFeature(layer);
-                });
+        layer.on('click', function(e){
+            
+            L.DomEvent.stop(e);
+            console.log("click on feature");
+            
+            var content = "";
+            var property = e.layer.feature.properties;
+
+            content += "<div class='fWrapper'><div class='fTitle'><h1>" + property.name_de + "</h1></div>";
+            content += "<div class='fKat'><div class='bKat'>" + property.category + "</div><div class='bArt' style='background-color:" + setColor(property.art) + ";'>" + property.art + "</div></div>";
+            content += "<div class='fDesc'>" + property.description_de + "</div><div class='fLink'><a href='" + property.url;
+            content += "' target='_blank' class='button'>Data Portal</a></div><div class='fStand'>hinzugefügt: " + property.stand + "</div>";
+            content += "</div>";
+
+            
+
+            property.selected = true;
+            if (selectedLayer){
+                e.target.setStyle(categoryStyle(e.layer.feature.properties.art));
+            }
+            
+            selected = e.target;
+            selectedLayer = e.layer;
+            
+            selectedLayer.setStyle(selectStyle);
+
+            setSidebarContent(content);
+        });
         return layer;
     }
 
     var file = "src/opendata.csv";
     var geoJSON = csvTojson(file, bundeslaender);
-   // console.log(JSON.stringify(geoJSON));
+
+   map.on('click', function(e){
+       sidebar.hide();
+       console.log("click on map");
+
+       // deselect features 
+        $.each(map._layers, function (ml) {
+            if (map._layers[ml].feature && map._layers[ml].feature.properties.selected === true ) {
+                map._layers[ml].setStyle(categoryStyle(map._layers[ml].feature.properties.art));
+                }
+        });
+
+    });
     
     
     var stadtLayer = sortLayer(geoJSON, "Stadt");
@@ -151,15 +216,22 @@ var selected;
 //TODO international noch mitangeben
 
     var geoLayers = L.layerGroup([stadtLayer, kreisLayer,bundeslandLayer,nationalLayer]);
-
-
-    
-
-
     stadtLayer.addTo(map);
 
-    $('#nav').children('a').not(":first").click(function() {
-        $(this).toggleClass("active");
+
+///////// navigation bar 
+    $('#nav').children('a').not('#info, #news').click(function() {
+        $(this).attr("class", "active");
+        $('#nav').children('a').not(this).removeClass("active");
+        sidebar.hide();
+    });
+
+    $("#info").click(function() {
+        setSidebarContent(infoContent);
+    });
+
+    $("#news").click(function() {
+        setSidebarContent(newsContent);
     });
 
     toggleFeatureLayer("stadtLayer", stadtLayer);
@@ -168,7 +240,6 @@ var selected;
     toggleFeatureLayer("nationalLayer", nationalLayer);
 
 
-   
 
 </script>
 
